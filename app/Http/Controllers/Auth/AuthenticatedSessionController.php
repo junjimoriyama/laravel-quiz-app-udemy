@@ -24,11 +24,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // リクエストデータから認証試みる
+        //リクエストデータから認証試みる
         $request->authenticate();
         //ログイン成功時にセッションIDを新たに生成
         $request->session()->regenerate();
-
+        //管理画面トップページにリダイレクト
         return redirect()->intended(route('admin.top', absolute: false));
     }
 
@@ -37,12 +37,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // 1. ログアウト処理（ユーザーを認証解除）
         Auth::guard('web')->logout();
 
+        // 2. セッションを無効化（セキュリティ対策）
         $request->session()->invalidate();
 
+        // 3. CSRF トークンを再生成
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // 4. ログアウト後に `/login` にリダイレクト
+        return redirect('login');
+        return redirect()->intended(route('login', absolute: false));
+
     }
 }
