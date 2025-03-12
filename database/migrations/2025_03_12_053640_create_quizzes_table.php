@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
+            // 外部キー
+            $table->foreignId('category_id')
+                    ->constrained() // categoryテーブルのidと紐付け
+                    ->onUpdate('cascade') //親テーブルと同時更新
+                    ->onDelete('cascade') //親テーブルと同時削除
+                    ->comment('カテゴリーID');
+            $table->text('question')->comment('問題文');
+            $table->text('explanation')->comment('解説');
             $table->timestamps();
         });
     }

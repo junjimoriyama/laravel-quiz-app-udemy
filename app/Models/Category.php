@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
+
+    public function quizzes()
+    {
+        // 固有のcategoryに紐づくクイズを取得
+        return  $this->hasMany(Quiz::class);
+    }
 }
