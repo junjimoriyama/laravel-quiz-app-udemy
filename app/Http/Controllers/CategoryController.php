@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 管理画面トップページ兼カテゴリー一覧表示
      */
-    public function index()
+    public function top()
     {
-        //
+        // カテゴリー一覧取得
+        $categories = Category::get();
+        return view('admin.top', ['categories' => $categories]);
     }
 
     /**
@@ -38,23 +41,25 @@ class CategoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * カテゴリー詳細画面表示
      */
-    public function show(Category $category)
+    public function show(Request $request, int $categoryId)
     {
-        //
+        $category = Category::findOrFail($categoryId);
+        return view('admin.categories.show', ['category' => $category]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * カテゴリー編集画面表示
      */
-    public function edit(Category $category)
+    public function edit(Category $categoryn, int $categoryId)
     {
-        //
+        // $category = Category::findOrFail($categoryId);
+        // return view('admin.categories.edit', ['category' => $category]);
     }
 
     /**
-     * Update the specified resource in storage.
+     *  カテゴリー更新処理
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {

@@ -22,15 +22,17 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-    // 管理画面topページ
-    Route::get('/top', function () {
-        return view('admin.top');
-    })->name('top');
+    // 管理画面topページ,カテゴリー一覧表示
+    Route::get('top', [CategoryController::class, 'top'])->name('top');
 
     Route::prefix('categories')->name('categories.')->group(function () {
         // カテゴリー管理
         Route::get('create', [CategoryController::class, 'create'])->name('create');
         // カテゴリー新規登録処理
         Route::Post('store', [CategoryController::class, 'store'])->name('store');
+        // カテゴリー詳細画面
+        Route::get('{categoryId}', [CategoryController::class, 'show'])->name('show');
+        // カテゴリー編集画面
+        // Route::get('{categoryId}', [CategoryController::class, 'edit'])->name('edit');
     });
 });
