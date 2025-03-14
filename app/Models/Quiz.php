@@ -11,11 +11,12 @@ class Quiz extends Model
     /** @use HasFactory<\Database\Factories\QuizFactory> */
     use HasFactory;
 
+    // クイズは一つのカテゴリーを持つ
     public function category() {
         return $this->belongsTo(Category::class);
     }
-
+    // クイズは複数のオプションを持つ
     public function options() {
-        return $this->hasMeny(Option::class);
+        return $this->hasMany(Option::class);
     }
 }

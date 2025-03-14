@@ -11,7 +11,7 @@ class StoreQuizRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,20 @@ class StoreQuizRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+
+        $rules = [
+            'question' => ['required', 'string', 'max:1000'],
+            'explanation' => ['required', 'string', 'max:1000'],
         ];
+
+        for($i = 1; $i <= 4; $i++) {
+            $rules["content{$i}"] = ['required', 'string', 'max:1000'];
+        }
+
+        for($i = 1; $i <= 4; $i++) {
+            $rules["isCorrect{$i}"] = ['required', 'integer', 'in:0,1'];
+        }
+
+        return $rules;
     }
 }
