@@ -101,16 +101,13 @@ class QuizController extends Controller
     /**
      * クイズ削除
      */
-    public function destroy(int $categoryId, int $quizId)
+    public function destroy(Request $request, int $categoryId, int $quizId)
     {
         //　クイズ削除
         $quiz = Quiz::findOrFail($quizId);
         $quiz->delete();
 
-        // オプション削除
-        for ($i = 0; $i < 4; $i++) {
-            # code...
-        }
+        return to_route('admin.top');
     }
 }
 
