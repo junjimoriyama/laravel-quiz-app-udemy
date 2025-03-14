@@ -21,8 +21,18 @@ class UpdateQuizRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+
+        $rules = [
+            'question' => ['required', 'string', 'max:1000'],
+            'explanation' => ['required', 'string', 'max:1000'],
         ];
+
+        for($i = 1; $i <= 4; $i++) {
+            $rules["optionId{$i}"] = ['required', 'integer', 'exists:options,id'];
+            $rules["content{$i}"] = ['required', 'string', 'max:1000'];
+            $rules["is_correct{$i}"] = ['required', 'integer', 'in:0,1'];
+        }
+
+        return $rules;
     }
 }

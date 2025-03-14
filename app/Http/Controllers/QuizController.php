@@ -76,31 +76,41 @@ class QuizController extends Controller
      */
     public function update(UpdateQuizRequest $request, int $categoryId, int $quizId)
     {
-        // dd($request->method());
         // クイズ更新
         $quiz = Quiz::findOrFail($quizId);
         $quiz->question = $request->question;
         $quiz->explanation = $request->explanation;
         $quiz->save();
 
-        for ($i = 1; $i <= 4; $i++) {
+        // オプション更新
+        for($i = 1; $i <= 4; $i++) {
+            // name属性からoptionのidを取得する
             $optionId = $request->input("optionId{$i}");
+            // そのidから編集するオプションを区別する
             $option = Option::findOrFail($optionId);
             $option->content = $request->input("content{$i}");
-            $option->is_correct = $request->input("isCorrect{$i}");
+            $option->is_correct = $request->input("is_correct{$i}");
             $option->save();
         }
+
         return to_route('admin.categories.show', [
-            'categoryId' => $categoryId,
+            "categoryId" => $categoryId
         ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * クイズ削除
      */
-    public function destroy(Quiz $quiz)
+    public function destroy(int $categoryId, int $quizId)
     {
-        //
+        //　クイズ削除
+        $quiz = Quiz::findOrFail($quizId);
+        $quiz->delete();
+
+        // オプション削除
+        for ($i = 0; $i < 4; $i++) {
+            # code...
+        }
     }
 }
 
@@ -127,20 +137,20 @@ class QuizController extends Controller
     // 3️⃣ `store()` メソッドの `$categoryId` に値が渡り、`quiz->category_id` に保存される
 
 
-// 📌 実際のデータベース構造
-// 1️⃣ quizzes テーブル
-// id	category_id	question	explanation
-// 1	2	問題1	解説1
-// 2️⃣ options テーブル（quiz_id が quizzes.id を参照）
-// id	quiz_id	content	is_correct
-// 1	1	選択肢A	0
-// 2	1	選択肢B	1
+// dd($request->method());
+        // クイズ更新
+        // $quiz = Quiz::findOrFail($quizId);
+        // $quiz->question = $request->question;
+        // $quiz->explanation = $request->explanation;
+        // $quiz->save();
 
-
-//  //categoryやoptionsはモデルで定義されたリレーションメソッドの名前
-//  $quiz = Quiz::with('category', 'options')->findOrFail($quizId);
-//  return view('admin.quizzes.edit', [
-//      'categoryId' => $categoryId,
-//      'quiz' => $quiz,
-     // 'options' => $quiz->options,
-//  ]);
+        // for ($i = 1; $i <= 4; $i++) {
+        //     $optionId = $request->input("optionId{$i}");
+        //     $option = Option::findOrFail($optionId);
+        //     $option->content = $request->input("content{$i}");
+        //     $option->is_correct = $request->input("isCorrect{$i}");
+        //     $option->save();
+        // }
+        // return to_route('admin.categories.show', [
+        //     'categoryId' => $categoryId,
+        // ]);

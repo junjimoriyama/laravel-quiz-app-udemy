@@ -29,9 +29,6 @@ class StoreQuizRequest extends FormRequest
 
         for($i = 1; $i <= 4; $i++) {
             $rules["content{$i}"] = ['required', 'string', 'max:1000'];
-        }
-
-        for($i = 1; $i <= 4; $i++) {
             $rules["isCorrect{$i}"] = ['required', 'integer', 'in:0,1'];
         }
 

@@ -9,9 +9,9 @@
 
                 <form
                     action="{{ route('admin.categories.quizzes.update', [
-                    'categoryId' => $categoryId,
-                    'quizId' => $quiz->id
-                    ])}}"
+                        'categoryId' => $categoryId,
+                        'quizId' => $quiz->id,
+                    ]) }}"
                     method="POST" class="flex flex-wrap -m-2">
                     @csrf
                     {{-- 問題文 --}}
@@ -38,8 +38,7 @@
                             <div class="text-red-300">{{ $message }}</div>
                         @enderror
                     </div>
-
-                    @foreach ($quiz->options as $option)
+                    @foreach ($options as $option)
                         {{-- オプションIdを送る --}}
                         <input type="hidden" name="optionId{{ $loop->iteration }}" value="{{ $option->id }}">
 
@@ -48,7 +47,8 @@
                             <div class="relative">
                                 <label for="content{{ $loop->iteration }}"
                                     class="leading-7 text-sm text-gray-600">選択肢{{ $option->content }}</label>
-                                <input type="text" id="content{{ $loop->iteration }}" name="content{{ $loop->iteration }}"
+                                <input type="text" id="content{{ $loop->iteration }}"
+                                    name="content{{ $loop->iteration }}"
                                     value="{{ old("content{$loop->iteration}", $option->content) }}"
                                     class="w-full bg-gray-50 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                             </div>
@@ -62,15 +62,16 @@
                         {{-- 選択肢の正解・不正解 --}}
                         <div class="p-2 w-full">
                             <div class="relative">
-                                <label for="isCorrect{{ $loop->iteration }}"
+                                <label for="is_correct{{ $loop->iteration }}"
                                     class="leading-7 text-sm text-gray-600">選択肢{{ $loop->iteration }}の正解・不正解</label>
-                                <select id="isCorrect{{ $loop->iteration }}" name="isCorrect{{ $loop->iteration }}"
+                                <select id="is_correct{{ $loop->iteration }}" name="is_correct{{ $loop->iteration }}"
                                     class="w-full bg-gray-50 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                     @foreach ([1 => '正解', 0 => '不正解'] as $value => $label)
-                                        <option value="{{ $value }}"
-                                            @if(old("isCorrect{$loop->iteration}", $option->is_correct) == $value) selected @endif>
-                                            {{ $label }}
-                                        </option>
+                                    <option value="{{ $value }}"
+                                    {{-- どちらかが選択される --}}
+                                    @selected(old("is_correct{$loop->iteration}", $option->is_correct) == $value)>
+                                    {{ $label }}
+                                </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -79,7 +80,6 @@
                                 <div class="text-red-300">{{ $message }}</div>
                             @enderror
                         </div>
-
                     @endforeach
 
                     <div class="p-2 w-full">
@@ -92,3 +92,42 @@
         </div>
     </section>
 </x-admin-layout>
+
+
+
+{{-- オプションIdを送る --}}
+{{-- <input type="hidden" name="optionId{{ $loop->iteration }}" value="{{ $option->id }}"> --}}
+
+{{-- <div class="p-2 w-full">
+    <div class="relative">
+        <label for="content{{ $loop->iteration }}"
+            class="leading-7 text-sm text-gray-600">選択肢{{ $option->content }}</label>
+        <input type="text" id="content{{ $loop->iteration }}" name="content{{ $loop->iteration }}"
+            value="{{ old("content{$loop->iteration}", $option->content) }}"
+            class="w-full bg-gray-50 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+    </div> --}}
+{{-- 選択肢のバリデーションエラーメッセージ表示 --}}
+{{-- @error("content{$loop->iteration}")
+        <div class="text-red-300">{{ $message }}</div>
+    @enderror
+</div> --}}
+
+{{-- <div class="p-2 w-full">
+    <div class="relative">
+        <label for="isCorrect{{ $loop->iteration }}"
+            class="leading-7 text-sm text-gray-600">選択肢{{ $loop->iteration }}の正解・不正解</label>
+        <select id="isCorrect{{ $loop->iteration }}" name="isCorrect{{ $loop->iteration }}"
+            class="w-full bg-gray-50 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            @foreach ([1 => '正解', 0 => '不正解'] as $value => $label)
+                <option value="{{ $value }}"
+                    @if (old("isCorrect{$loop->iteration}", $option->is_correct) == $value) selected @endif>
+                    {{ $label }}
+                </option>
+            @endforeach
+        </select>
+    </div> --}}
+{{-- 選択肢の正解・不正解のバリデーションエラーメッセージ表示 --}}
+{{-- @error("isCorrect{$loop->iteration}")
+        <div class="text-red-300">{{ $message }}</div>
+    @enderror
+</div> --}}
