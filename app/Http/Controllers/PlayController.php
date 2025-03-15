@@ -30,18 +30,20 @@ class PlayController extends Controller
     // クイズ出題画面
     public function quizzes(int $categoryId)
     {
-        // カテゴリーに紐づくクイズと選択肢を全て取得する
+        // カテゴリーと共に紐づくクイズとその選択肢を取得
         $category = Category::with("quizzes.options")->findOrFail($categoryId);
-        // クイズをランダムに選ぶ
+        // クイズを配列にして取得
         $quizzes = $category->quizzes->toArray();
+        // ランダムに表示するためシャッフル
         shuffle($quizzes);
+        // シャッフルされた配列より一つのクイズを選択
         $quiz = $quizzes[0];
 
-        // dd($quiz);
         return view('play.quizzes', [
             'categoryId' => $categoryId,
             'quiz' =>  $quiz
         ]);
+
     }
 }
 
@@ -57,8 +59,15 @@ class PlayController extends Controller
 
 
 
+//  // カテゴリーに紐づくクイズと選択肢を全て取得する
+//  $category = Category::with("quizzes.options")->findOrFail($categoryId);
+//  // クイズをランダムに選ぶ
+//  $quizzes = $category->quizzes->toArray();
+//  shuffle($quizzes);
+//  $quiz = $quizzes[0];
 
-
-
-
-
+//  // dd($quiz);
+//  return view('play.quizzes', [
+//      'categoryId' => $categoryId,
+//      'quiz' =>  $quiz
+//  ]);

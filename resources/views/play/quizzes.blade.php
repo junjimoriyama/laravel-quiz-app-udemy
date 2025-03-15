@@ -30,7 +30,17 @@
                     </thead>
                     <tbody>
 
-                        @for ($i = 0; $i < count($quiz['options']); $i++)
+                        @foreach ($quiz['options'] as $key => $option)
+                        <tr>
+                            <td class="px-4 py-3">{{ $key + 1 }}</td>
+                            <td class="px-4 py-3">{{ $option['content'] }}
+                            </td>
+                            <td class="w-10 text-center">
+                                <input name="plan" type="checkbox">
+                            </td>
+                        </tr>
+                        @endforeach
+                        {{-- @for ($i = 0; $i < count($quiz['options']); $i++)
                         <tr>
                             <td class="px-4 py-3">{{ $i + 1 }}</td>
                             <td class="px-4 py-3">{{ $quiz['options'][$i]
@@ -39,7 +49,7 @@
                                 <input name="plan" type="checkbox">
                             </td>
                         </tr>
-                        @endfor
+                        @endfor --}}
                     </tbody>
                 </table>
             </div>
