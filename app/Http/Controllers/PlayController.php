@@ -16,7 +16,7 @@ class PlayController extends Controller
             'categories' => $categories
         ]);
     }
-
+    // クイズスタート画面
     public function categories(int $categoryId)
     {
         $category = Category::withCount('quizzes')->findOrFail($categoryId);
@@ -25,6 +25,22 @@ class PlayController extends Controller
         return view('play.start', [
             'category' => $category,
             'quizzesCount' => $category->quizzes_count
+        ]);
+    }
+    // クイズ出題画面
+    public function quizzes(int $categoryId)
+    {
+        // カテゴリーに紐づくクイズと選択肢を全て取得する
+        $category = Category::with("quizzes.options")->findOrFail($categoryId);
+        // クイズをランダムに選ぶ
+        $quizzes = $category->quizzes->toArray();
+        shuffle($quizzes);
+        $quiz = $quizzes[0];
+
+        // dd($quiz);
+        return view('play.quizzes', [
+            'categoryId' => $categoryId,
+            'quiz' =>  $quiz
         ]);
     }
 }
