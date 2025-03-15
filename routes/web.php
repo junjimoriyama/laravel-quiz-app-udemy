@@ -8,18 +8,12 @@ use Illuminate\Support\Facades\Route;
 
 // プレイヤー画面
 Route::get('/', [PlayController::class, 'top'])->name('top');
+// クイズスタート画面(各カテゴリー表示)
+// 第一引数のURLにアクセスしたら指定したコントローラーのcategoriesメソッドが実行され、categoryIdも使用できる。
+Route::get('categories/{categoryId}', [PlayController::class, 'categories'])->name('categories');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-// 現在の階層にあるファイル呼び出し
+// 管理者の認証機能
 require __DIR__ . '/auth.php';
 
 // 管理画面
