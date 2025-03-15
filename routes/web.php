@@ -11,6 +11,8 @@ Route::get('/', [PlayController::class, 'top'])->name('top');
 // クイズスタート画面(各カテゴリー表示)
 // 第一引数のURLにアクセスしたら指定したコントローラーのcategoriesメソッドが実行され、categoryIdも使用できる。
 Route::get('categories/{categoryId}', [PlayController::class, 'categories'])->name('categories');
+// クイズ出題画面に遷移
+Route::get('categories/{categoryId}/quizzes', [PlayController::class, 'quizzes'])->name('categories.quizzes');
 
 
 // 管理者の認証機能

@@ -19,15 +19,14 @@ class PlayController extends Controller
 
     public function categories(int $categoryId)
     {
-        // 表示するカテゴリーの取得
-        $category = Category::findOrFail($categoryId);
+        $category = Category::withCount('quizzes')->findOrFail($categoryId);
+
+        // クイズスタート画面表示
         return view('play.start', [
-            'category' => $category
+            'category' => $category,
+            'quizzesCount' => $category->quizzes_count
         ]);
     }
-
-    // クイズスタート画面表示
-
 }
 
 
@@ -47,29 +46,3 @@ class PlayController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// public function categories(Request $request, int $categoryId)
-// {
-//     $category = Category::findOrFail($categoryId);
-//     return view("play.start",[
-//         'category' => $category
-//     ] );
-// }
-
-// Route::get('categories/{categoryId}', [PlayController::class, 'categories'])->name('categories');
