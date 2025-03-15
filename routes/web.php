@@ -3,11 +3,11 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\PlayController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('play/top');
-});
+// プレイヤー画面
+Route::get('/', [PlayController::class, 'top'])->name('top');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -57,3 +57,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         });
     });
 });
+
+// プレイヤー画面
+// Route::prefix('play')->name('play.')->group(function () {
+//     // カテゴリー取得
+//     Route::get('/', [PlayController::class, 'top'])->name('top');
+// });
