@@ -13,6 +13,8 @@ Route::get('/', [PlayController::class, 'top'])->name('top');
 Route::get('categories/{categoryId}', [PlayController::class, 'categories'])->name('categories');
 // クイズ出題画面に遷移
 Route::get('categories/{categoryId}/quizzes', [PlayController::class, 'quizzes'])->name('categories.quizzes');
+// クイズ解答画面
+Route::post('categories/{categoryId}/quizzes/answer', [PlayController::class, 'answer'])->name('categories.quizzes.answer');
 
 
 // 管理者の認証機能
@@ -28,7 +30,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         // カテゴリー管理
         Route::get('create', [CategoryController::class, 'create'])->name('create');
         // カテゴリー新規登録処理
-        Route::Post('store', [CategoryController::class, 'store'])->name('store');
+        Route::post('store', [CategoryController::class, 'store'])->name('store');
         // カテゴリー詳細画面　兼　クイズ一覧画面　表示
         Route::get('{categoryId}', [CategoryController::class, 'show'])->name('show');
         // カテゴリー編集画面

@@ -43,31 +43,60 @@ class PlayController extends Controller
             'categoryId' => $categoryId,
             'quiz' =>  $quiz
         ]);
+    }
 
+    public function answer(Request $request, int $categoryId)
+    {
+        // 選んだの解答(id)
+        $quizId = $request->quizId;
+        // 配列を期待しているので
+        $selectedOptions = $request->optionId === null ? [] : $request->optionId;
+        // クイズの選択肢
+        // カテゴリーから全てのクイズ取得
+        $category = Category::with("quizzes.options")->findOrFail($categoryId);
+        // カテゴリーに紐づく全てのクイズ
+        $quizzes = $category->quizzes;
+        // 選択肢たクイズはクイズの中にあるidがクイズのidと合致するもの
+        $quiz = $quizzes->firstWhere('id', $quizId);
+        // 合致するクイズのオプション
+        $quizOptions = $quiz->options->toArray();
+        // 関数の実行
+        $isCorrectAnswer = $this->isCorrectAnswer($selectedOptions, $quizOptions);
+
+        return view('play.answer', [
+            "isCorrectAnswer" => $isCorrectAnswer,
+            "quiz" => $quiz->toArray(),
+            "quizOptions" => $quizOptions,
+            "selectedOptions" => $selectedOptions,
+            "categoryId" => $categoryId,
+        ]);
+    }
+
+    // プレイヤーの解答が正解か不正解か判定
+    private function isCorrectAnswer(array $selectedOptions, array $quizOptions)
+    {
+        // クイズの選択肢から正解の選択肢を抽出
+        $correctOptions = array_filter($quizOptions, function($option) {
+            return $option["is_correct"] == 1;
+        });
+
+        // idの数字だけ抽出
+        $correctOptionIds = array_map(function($option) {
+            return $option['id'];
+        },  $correctOptions);
+
+        // プレイヤーが選んだ選択肢の個数と正解の選択肢の個数が一致するか判定する
+        if(count($selectedOptions) !== count($correctOptionIds)) {
+            return false;
+        }
+        // プレイヤーが選んだ選択肢のid番号と正解のidが全て一致することを判定する
+        foreach( $selectedOptions as $selectedOption) {
+            if(!in_array((int)$selectedOption, $correctOptionIds)) {
+                return false;
+            }
+        }
+        // 正解であることを返す
+        return true;
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-//  // カテゴリーに紐づくクイズと選択肢を全て取得する
-//  $category = Category::with("quizzes.options")->findOrFail($categoryId);
-//  // クイズをランダムに選ぶ
-//  $quizzes = $category->quizzes->toArray();
-//  shuffle($quizzes);
-//  $quiz = $quizzes[0];
-
-//  // dd($quiz);
-//  return view('play.quizzes', [
-//      'categoryId' => $categoryId,
-//      'quiz' =>  $quiz
-//  ]);
