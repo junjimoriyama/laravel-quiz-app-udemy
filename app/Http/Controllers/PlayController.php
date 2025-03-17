@@ -20,7 +20,7 @@ class PlayController extends Controller
     public function categories(int $categoryId)
     {
         // セッションの削除
-        session()->foget('resultArray');
+        session()->forget('resultArray');
 
         $category = Category::withCount('quizzes')->findOrFail($categoryId);
 
@@ -58,9 +58,13 @@ class PlayController extends Controller
         // $resultArrayのresultがnullのものだけ選ぶ
         $noAnswerResult = collect($resultArray)->filter(fn($item) => $item['result'] === null)->first();
 
-        // クイズの解答がなくれば
+
+        // クイズの解答がなければresult画面は
         if (!$noAnswerResult) {
-            dd('未回答のクイズはない');
+            // dd($noAnswerResult);
+            return to_route('categories.quizzes.result', [
+                'categoryId' => $categoryId
+            ]);
         }
         // quizzes の中から id が $noAnswerResult['quizId'] に一致する最初の要素を取得
         $quiz = $category->quizzes->firstWhere('id', $noAnswerResult['quizId'])->toArray();
@@ -107,8 +111,6 @@ class PlayController extends Controller
         //更新後の `resultArray` をセッションに保存(上書き)
         session(['resultArray' => $resultArray]);
 
-
-
         // dd($isCorrectAnswer);
 
         return view('play.answer', [
@@ -147,6 +149,23 @@ class PlayController extends Controller
 
         // 正解であることを返す
         return true;
+    }
+
+    // result画面表示
+    public function result(int $categoryId)
+    {
+        // セッションより結果取得
+        $resultArray = session('resultArray');
+        // クイズの数
+        $questionCount = count($resultArray);
+        // 正解の数
+        $correctCount = collect($resultArray)->filter(fn($item) => $item['result'] === true)->count();
+
+        return view('play.result', [
+            'questionCount' => $questionCount,
+            'correctCount' => $correctCount,
+            'categoryId' => $categoryId,
+        ]);
     }
 }
 
